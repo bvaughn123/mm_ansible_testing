@@ -1,0 +1,29 @@
+---
+
+CONTAINER_NAME: Mattermost
+POD_NAME: "{{ POD_NAME }}"
+IMAGE_NAME: "{{ MATTERMOST_IMAGE | default('mattermost/mattermost-team-edition') }}"
+RESTART_POLICY: "{{ RESTART_POLICY | default('unless-stopped') }}"
+SECURITY_OPTIONS: 
+  - "no-new-privileges:true"
+CONTAINER_TMPFS: 
+  "/tmp": "rw,noexec,nosuid"
+VOLUMES: 
+  - "{{ MATTERMOST_CONFIG_PATH }}:/mattermost/config:rw"
+  - "{{ MATTERMOST_DATA_PATH }}:/mattermost/data:rw"
+  - "{{ MATTERMOST_LOGS_PATH }}:/mattermost/logs:rw"
+  - "{{ MATTERMOST_PLUGINS_PATH }}:/mattermost/plugins:rw"
+  - "{{ MATTERMOST_CLIENT_PLUGINS_PATH }}:/mattermost/client/plugins:rw"
+  - "{{ MATTERMOST_BLEVE_INDEXES_PATH }}:/mattermost/bleve-indexes:rw"
+LOG_OPTIONS:
+  - log_level: "warning"
+PORTS:  
+  - "{{ CALLS_PORT | default('8443')}}:8443"
+  - "{{ APP_PORT   | default('8065')}}:8065"
+ENV_VARS: 
+  TZ: {{ TZ }}
+  MM_SQLSETTINGS_DRIVERNAME: postgres
+  MM_SQLSETTINGS_DATASOURCE: "postgres://{{ POSTGRES_USER }}:{{ POSTGRES_PASSWORD }}@postgres:5432/{{ POSTGRES_DB }}?sslmode=disable&connect_timeout=10"
+  MM_SERVICESETTINGS_SITEURL: "https://{{ DOMAIN }}"
+  MM_BLEVESETTINGS_INDEXDIR: "/mattermost/bleve-indexes"
+

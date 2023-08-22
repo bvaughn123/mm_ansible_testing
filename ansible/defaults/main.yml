@@ -1,0 +1,54 @@
+---
+#########################################
+# GENERAL 
+## GLOBAL CONTAINER VARS
+DOMAIN: mattermost.test
+TZ: UTC
+RESTART_POLICY: unless-stopped
+POD_NAME: pod_mattermost
+## GLOBAL CONTAINER VOLUME MOUNTS
+CONTAINER_VOLUME_MOUNT_DIR: "/opt/containers"
+SERVICE_FILES_DIR: "{{ CONTAINER_VOLUME_MOUNT_DIR }}/mattermost/volumes"
+
+#########################################
+# IMAGES - commented out for testing
+# MATTERMOST_IMAGE: "{{ provisioner_fqdn}}:{{ registry port }}/mattermost:team-edition:latest"
+# NGINX_IMAGE: "{{ provisioner_fqdn}}:{{ registry port }}/nginx:stable"
+# POSTGRES_IMAGE: "{{ provisioner_fqdn}}:{{ registry port }}/postgres:13-alpine"
+
+#########################################
+# POSTGRES
+## POSTGRES VOLUME MOUNTS
+POSTGRES_VOLUME: "{{SERVICE_FILES_DIR }}/postgres"
+POSTGRES_DATA_VOLUME: "{{CONTAINER_VOLUME_MOUNT_DIR}}/volumes/db/var/lib/postgresql/data"
+## POSTGRES ENV VARS
+#POSTGRES_USER: mmuser
+#POSTGRES_PASSWORD: mmuser_password
+#POSTGRES_DB: mattermost
+
+#########################################
+# MATTERMOST 
+## MATTERMOST VOLUME MOUNTS
+MATTERMOST_CONFIG_PATH: "{{ SERVICE_FILES_DIR }}/app/mattermost/config"
+MATTERMOST_DATA_PATH: "{{ SERVICE_FILES_DIR }}/app/mattermost/data"
+MATTERMOST_LOGS_PATH: "{{ SERVICE_FILES_DIR }}/app/mattermost/logs"
+MATTERMOST_PLUGINS_PATH: "{{ SERVICE_FILES_DIR }}/app/mattermost/plugins"
+MATTERMOST_CLIENT_PLUGINS_PATH: "{{ SERVICE_FILES_DIR }}/app/mattermost/client/plugins"
+MATTERMOST_BLEVE_INDEXES_PATH: "{{ SERVICE_FILES_DIR }}/app/mattermost/bleve-indexes"
+
+#########################################
+# NGINX CONFIG
+## NGINX VOLUME MOUNT
+NGINX_VOLUME: "{{ SERVICE_FILES_DIR }}/nginx"
+NGINX_CONFIG_PATH: "{{ NGINX_VOLUME }}/conf.d"
+## NGINX SSL / TLS 
+SSL_DIR: "/etc/pki/ssl"
+CERT_FILE: "{{ ansible_fqdn }}.pem" #.crtva
+KEY_FILE: "{{ ansible_fqdn }}.key"
+CERT_LOCATION: "{{ SSL_DIR }}/certs"
+KEY_LOCATION:  "{{ SSL_DIR }}/private"
+## NGINX PORTS
+HTTPS_PORT: 443
+HTTP_PORT: 80
+CALLS_PORT: 8443
+

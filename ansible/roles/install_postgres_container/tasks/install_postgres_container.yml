@@ -1,0 +1,31 @@
+---
+
+- name: Run container
+  containers.podman.podman_container:
+    name: "{{ CONTAINER_NAME }}"
+    pod: "new:{{ POD_NAME }}"
+    image: "{{ IMAGE_NAME }}"
+    restart_policy: "{{ RESTART_POLICY }}"
+    security_opt: "{{ SECURITY_OPTIONS }}"
+    pids_limit: "{{ MAX_CONNECTIONS }}"
+    volume: "{{ VOLUMES }}"
+    log_driver: journald
+    log_level: "{{ LOG_LVL }}"
+    log_opt: "{{ LOG_OPTIONS }}"
+    env:
+      loop: "{{ ENV_VARS }}"
+    tmpfs: "{{ CONTAINER_TMPFS }}"
+    state: started
+    ports: "{{ PORTS }}"
+      
+- name: "Copy {{ role_name }} scripts"
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/local/bin/"
+    mode: 0755
+  loop:
+    - files/podman-postgres-backup
+    - files/podman-postgres-restore
+    - files/podman-postgres-list
+    - files/podman-postgres-drop
+    - files/podman-postgres-patch

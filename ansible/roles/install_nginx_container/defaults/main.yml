@@ -1,0 +1,29 @@
+---
+CONTAINER_NAME: mm_nginx
+POD_NAME: "{{ POD_NAME }}"
+IMAGE_NAME: "{{ NGINX_IMAGE | default('alpine:latest') }}"
+RESTART_POLICY: "{{ RESTART_POLICY | default('unless-stopped') }}"
+SECURITY_OPTIONS:       
+  - no-new-privileges:true
+MAX_CONNECTIONS: 120
+CONTAINER_TMPFS: 
+  "/var/run": "rw,noexec,nosuid"
+  "/var/cache": "rw,noexec,nosuid"
+  "/var/log/nginx": "rw,noexec,nosuid"
+VOLUMES: 
+  - "{{ NGINX_CONFIG_PATH }}:/etc/nginx/conf.d:ro"
+  - "{{ CERT_LOCATION }}:/cert.pem:ro"
+  - "{{ KEY_LOCATION }}:/key.pem:ro"
+LOG_LVL: "warn"
+LOG_OPTIONS: 
+  max_size: null
+  path: null
+  tag: null
+CERT_LOCATION: "{{ CERT_LOCATION }}"
+KEY_LOCATION: "{{ KEY_LOCATION }}"
+PORTS:
+  - "{{ HTTPS_PORT | default('443') }}:443"
+  - "{{ HTTP_PORT | default('80') }}:80"
+  - "{{ CALLS_PORT | default('8443') }}:8443"
+ENV_VARS: 
+  TZ: "{{ TZ }}"

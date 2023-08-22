@@ -1,0 +1,6 @@
+--- 
+
+- name: "Restart {{ role_name }} container"
+  community.podman.podman_container:
+    name: "{{ CONTAINER_NAME }}"
+    restart: true

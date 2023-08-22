@@ -1,0 +1,17 @@
+
+- name: "Self signed cert"
+  hosts: all
+
+  vars_files: 
+    - group_vars/all.yml 
+
+  tasks:
+
+    - name: Generate Certificate
+      import_tasks: tasks/generate_certificate.yml
+
+    - name: Install Podman
+      import_tasks: tasks/install_podman.yml
+      become: true
+
+      

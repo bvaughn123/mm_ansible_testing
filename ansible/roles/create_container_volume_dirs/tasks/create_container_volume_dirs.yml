@@ -1,0 +1,48 @@
+---
+
+- name: Create Postgres dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: 70
+    group: 70
+    setype: container_file_t
+  with_items:
+    - "{{ POSTGRES_VOLUME }}"
+    - "{{ POSTGRES_DATA_VOLUME }}"
+
+- name: Create Mattermost app directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: 2000
+    group: 2000
+    setype: container_file_t
+  with_items:
+    - "{{ MATTERMOST_CONFIG_PATH }}"
+    - "{{ MATTERMOST_DATA_PATH }}"
+    - "{{ MATTERMOST_LOGS_PATH }}"
+    - "{{ MATTERMOST_PLUGINS_PATH }}"
+    - "{{ MATTERMOST_CLIENT_PLUGINS_PATH }}"
+    - "{{ MATTERMOST_BLEVE_INDEXES_PATH }}"
+
+- name: Create Nginx dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    setype: container_share_t
+  with_items:
+    - "{{ SSL_DIR }}"
+    - "{{ NGINX_VOLUME }}"
+
+- name: Copy Conf.d file to host
+  copy:
+    src: "{{ NGINX_DEFAULT_CONF_FILE }}"
+    dest: "{{ NGINX_CONFIG_PATH }}"
+    owner: root
+    group: root
+    mode: 0644
+    force: yes
+    setype: container_file_t

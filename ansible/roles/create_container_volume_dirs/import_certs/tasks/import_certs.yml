@@ -1,0 +1,22 @@
+---
+
+- name: Ensure certificate directory exists
+  file:
+    path: "{{ SSL_DIR }}"
+    state: directory
+
+- name: Copy SSL keys and certificates
+  copy:
+    src: "{{ CERT_LOCATION }}/{{ CERT_FILE }}"
+    dest: "{{ SSL_DIR }}/{{ CERT_FILE }}"
+    mode: '0600'
+    remote_src: yes
+    setype: container_file_t
+    
+- name: Import TLS key
+  copy:
+    src: "{{ KEY_LOCATION }}/{{ KEY_FILE }}"
+    dest: "{{ SSL_DIR }}/{{ KEY_FILE }}"
+    mode: '0600'
+    remote_src: yes
+    setype: container_file_t

@@ -1,0 +1,18 @@
+---
+
+- name: Run container
+  containers.podman.podman_container:
+    name: "{{ CONTAINER_NAME }}"
+    pod: "{{ POD_NAME }}"
+    image: "{{ IMAGE_NAME }}"
+    restart_policy: "{{ RESTART_POLICY }}"
+    security_opt: "{{ SECURITY_OPTIONS }}"
+    pids_limit: "{{ MAX_CONNECTIONS }}"
+    tmpfs:  "{{ CONTAINER_TMPFS }}"
+    volume: "{{ VOLUMES }}"
+    log_driver: journald
+    log_level: "{{ LOG_LVL }}"
+    log_opt: "{{ LOG_OPTIONS }}"
+    env:
+      loop: "{{ ENV_VARS }}"
+    ports: {{ PORTS }} 

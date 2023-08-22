@@ -1,0 +1,14 @@
+---
+
+- name: Install Podman
+  package:
+    name: podman
+    state: present
+  tags: [ 'install_podman' ] 
+
+- name: Podman Systemd 
+  ansible.builtin.systemd:
+    name: podman
+    daemon_reload: yes
+    state: started
+    enabled: yes

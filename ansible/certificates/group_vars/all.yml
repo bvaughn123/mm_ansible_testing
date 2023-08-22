@@ -1,0 +1,5 @@
+---
+SSL_DIR: /etc/pki/ssl
+CERT_LOCATION: "{{ SSL_DIR }}/certs"
+KEY_LOCATION:  "{{ SSL_DIR }}/private"
+...

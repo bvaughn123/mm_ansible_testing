@@ -1,0 +1,30 @@
+---
+CONTAINER_NAME: mm_postgres
+POD_NAME: "{{ POD_NAME }}"
+IMAGE_NAME: postgres:13-alpine
+RESTART_POLICY: "{{ RESTART_POLICY }}"
+SECURITY_OPTIONS: 
+  - no-new-privileges:true
+MAX_CONNECTIONS: 120
+POSTGRES_DATA_PATH: "{{CONTAINER_VOLUME_MOUNT_DIR}}/volumes/db/var/lib/postgresql/data"
+CONTAINER_TMPFS: 
+  "/tmp": "rw,noexec,nosuid"
+  "/var/run/postgresql": "rw,noexec,nosuid"
+VOLUMES:
+  "{{ POSTGRES_DATA_PATH }}:/var/lib/postgresql/data"
+LOG_LVL: "warn"
+LOG_OPTIONS: 
+  max_size: null
+  path: null
+  tag: null
+# Must be defined when initializing the pod
+PORTS:
+  - "{{ HTTPS_PORT | default('443') }}:443"
+  - "{{ HTTP_PORT | default('80') }}:80"
+  - "{{ CALLS_PORT | default('8443') }}:8443"
+# TODO: add write the env vars to a file and then use the file as the env var source
+ENV_VARS: 
+  TZ: "{{ TZ }}"
+  POSTGRES_USER: "{{ POSTGRES_USER | default('dbuser')}}"
+  POSTGRES_PASSWORD: "{{ POSTGRES_PASS | default('matterleast') }}"
+  POSTGRES_DB: "{{ POSTGRES_DB_NAME | default('mattermostest')}}"

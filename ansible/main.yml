@@ -1,0 +1,14 @@
+---
+
+- hosts: all
+  become: yes
+  gather_facts: yes
+  
+  vars_files:
+    - defaults/main.yml
+
+  roles: 
+   - create_container_volume_dirs
+   - import_certs
+   - install_postgres_container
+   - install_nginx_container

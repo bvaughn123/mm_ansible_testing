@@ -1,0 +1,109 @@
+---
+
+- name: install pip
+  dnf:
+    name: python3-pip
+    state: present
+  become: yes
+  tags: [pip]
+
+- name: Upagrade pip
+  pip:
+    name: pip
+    state: latest
+    umask: "0022"
+  become: yes
+  tags: [pip]
+
+- name: install cryptography
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items: 
+    - setuptools
+    - cryptography
+  tags: [pip]
+
+- name: dnf Upagrade
+  dnf:
+    name: "*"
+    state: latest
+  become: yes
+
+- name: Create private key (RSA, 4096 bits)
+  community.crypto.openssl_privatekey:
+    path: "/tmp/certificate.key"
+  tags: [cert]
+
+- name: Create simple self-signed certificate
+  community.crypto.x509_certificate:
+    path: "/tmp/certificate.pem"
+    privatekey_path: "/tmp/certificate.key"
+    provider: selfsigned
+  tags: [cert]
+
+- name: Create certificate signing request (CSR) for self-signed certificate
+  community.crypto.openssl_csr:
+    privatekey_path: "/tmp/certificate.key"
+    common_name: "{{ ansible_fqdn }}"
+    subject_alt_name:
+      - "DNS:{{ ansible_fqdn }}"
+      - "DNS:www.{{ ansible_fqdn }}"
+      - "DNS:docs.{{ ansible_fqdn }}"
+    path: "/tmp/certificate.csr"
+  tags: [cert]
+
+- name: Create self-signed certificate from CSR
+  community.crypto.x509_certificate:
+    path: "/tmp/certificate.pem"
+    csr_path: "/tmp/certificate.csr"
+    privatekey_path: "/tmp/certificate.key"
+    provider: selfsigned    
+  tags: [cert]
+
+- name: Create directorys 
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ CERT_LOCATION }}"
+    - "{{ KEY_LOCATION }}"
+  become: yes 
+  tags: [dirs] 
+
+- name: Move certificate to {{ CERT_LOCTION }}
+  copy:
+    src: "/tmp/certificate.pem"
+    dest: "{{ CERT_LOCATION }}/{{ ansible_fqdn }}.pem"
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: yes
+  become: yes
+  tags: [mv_cert]
+
+- name: Move private key to {{ KEY_LOCATION }}
+  copy:
+    src: "/tmp/certificate.key"
+    dest: "{{ KEY_LOCATION }}/{{ ansible_fqdn }}.key"
+    owner: root
+    group: root
+    mode: 0600
+    remote_src: yes
+  become: yes
+  tags: [mv_cert]
+
+- name: Delete Stuff
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/tmp/certificate.csr"
+    - "/tmp/certificate.pem"
+    - "/tmp/certificate.key"
+  tags: [cleanup]
+
+
