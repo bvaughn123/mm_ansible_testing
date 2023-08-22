@@ -12,3 +12,4 @@
    - import_certs
    - install_postgres_container
    - install_nginx_container
+   - install_mattermost_container

@@ -16,4 +16,4 @@
     env:
       loop: "{{ ENV_VARS }}"
     state: started
-    ports: "{{ PORTS }}"
+

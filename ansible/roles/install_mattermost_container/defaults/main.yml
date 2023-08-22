@@ -2,7 +2,7 @@
 
 CONTAINER_NAME: Mattermost
 POD_NAME: "{{ POD_NAME }}"
-IMAGE_NAME: "{{ MATTERMOST_IMAGE | default('mattermost/mattermost-team-edition') }}"
+IMAGE_NAME: "mattermost/mattermost-team-edition"
 RESTART_POLICY: "{{ RESTART_POLICY | default('unless-stopped') }}"
 SECURITY_OPTIONS: 
   - "no-new-privileges:true"
@@ -15,13 +15,16 @@ VOLUMES:
   - "{{ MATTERMOST_PLUGINS_PATH }}:/mattermost/plugins:rw"
   - "{{ MATTERMOST_CLIENT_PLUGINS_PATH }}:/mattermost/client/plugins:rw"
   - "{{ MATTERMOST_BLEVE_INDEXES_PATH }}:/mattermost/bleve-indexes:rw"
-LOG_OPTIONS:
-  - log_level: "warning"
+LOG_LVL: "info"
+LOG_OPTIONS: 
+  max_size: null
+  path: null
+  tag: null
 PORTS:  
   - "{{ CALLS_PORT | default('8443')}}:8443"
   - "{{ APP_PORT   | default('8065')}}:8065"
 ENV_VARS: 
-  TZ: {{ TZ }}
+  TZ: "{{ TZ }}"
   MM_SQLSETTINGS_DRIVERNAME: postgres
   MM_SQLSETTINGS_DATASOURCE: "postgres://{{ POSTGRES_USER }}:{{ POSTGRES_PASSWORD }}@postgres:5432/{{ POSTGRES_DB }}?sslmode=disable&connect_timeout=10"
   MM_SERVICESETTINGS_SITEURL: "https://{{ DOMAIN }}"

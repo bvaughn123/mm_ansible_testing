@@ -25,6 +25,6 @@ PORTS:
 # TODO: add write the env vars to a file and then use the file as the env var source
 ENV_VARS: 
   TZ: "{{ TZ }}"
-  POSTGRES_USER: "{{ POSTGRES_USER | default('dbuser')}}"
-  POSTGRES_PASSWORD: "{{ POSTGRES_PASS | default('matterleast') }}"
-  POSTGRES_DB: "{{ POSTGRES_DB_NAME | default('mattermostest')}}"
+  POSTGRES_USER: dbuser
+  POSTGRES_PASSWORD: matterleast
+  POSTGRES_DB: mattermostest

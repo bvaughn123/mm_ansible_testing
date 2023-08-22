@@ -22,9 +22,9 @@ SERVICE_FILES_DIR: "{{ CONTAINER_VOLUME_MOUNT_DIR }}/mattermost/volumes"
 POSTGRES_VOLUME: "{{SERVICE_FILES_DIR }}/postgres"
 POSTGRES_DATA_VOLUME: "{{CONTAINER_VOLUME_MOUNT_DIR}}/volumes/db/var/lib/postgresql/data"
 ## POSTGRES ENV VARS
-#POSTGRES_USER: mmuser
-#POSTGRES_PASSWORD: mmuser_password
-#POSTGRES_DB: mattermost
+POSTGRES_USER: "dbuser"
+POSTGRES_PASSWORD: "matterleast"
+POSTGRES_DB: "mattermostest"
 
 #########################################
 # MATTERMOST 

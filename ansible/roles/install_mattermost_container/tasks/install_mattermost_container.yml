@@ -15,4 +15,4 @@
     log_opt: "{{ LOG_OPTIONS }}"
     env:
       loop: "{{ ENV_VARS }}"
-    ports: {{ PORTS }} 
+    state: started

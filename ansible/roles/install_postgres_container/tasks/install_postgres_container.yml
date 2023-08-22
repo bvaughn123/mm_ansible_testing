@@ -1,9 +1,16 @@
 ---
 
+
+- name: Initiate Pod
+  containers.podman.podman_pod:
+    name: "{{ POD_NAME }}"
+    state: started
+    ports: "{{ PORTS }}"
+      
 - name: Run container
   containers.podman.podman_container:
     name: "{{ CONTAINER_NAME }}"
-    pod: "new:{{ POD_NAME }}"
+    pod: "{{ POD_NAME }}"
     image: "{{ IMAGE_NAME }}"
     restart_policy: "{{ RESTART_POLICY }}"
     security_opt: "{{ SECURITY_OPTIONS }}"
@@ -16,8 +23,7 @@
       loop: "{{ ENV_VARS }}"
     tmpfs: "{{ CONTAINER_TMPFS }}"
     state: started
-    ports: "{{ PORTS }}"
-      
+
 - name: "Copy {{ role_name }} scripts"
   copy:
     src: "{{ item }}"
